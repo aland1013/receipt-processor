@@ -1,12 +1,27 @@
 import uuid
 import math
 from datetime import datetime
+from typing import Dict, Optional, Any, Union
 from app.models import Receipt
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # In-memory storage for receipts
-receipts_store = {}
+receipts_store: Dict[str, Dict[str, Any]] = {}
 
-def process_receipt(receipt_data):
+
+def process_receipt(receipt_data: Dict[str, Any]) -> Optional[str]:
+    """
+    Process a receipt and calculate points.
+    
+    Args:
+        receipt_data: The receipt data to process
+        
+    Returns:
+        A unique ID for the receipt, or None if processing failed
+    """
     try:
         # Validate the receipt using Pydantic model
         receipt = Receipt(**receipt_data)
@@ -25,18 +40,38 @@ def process_receipt(receipt_data):
         
         return receipt_id
     except Exception as e:
-        # Log the error (in a real application)
-        print(f"Error processing receipt: {e}")
+        # Log the error
+        logger.error(f"Error processing receipt: {e}")
         # Return None instead of raising the exception
         return None
 
-def get_receipt_points(receipt_id):
+
+def get_receipt_points(receipt_id: str) -> Optional[int]:
+    """
+    Get the points for a receipt by ID.
+    
+    Args:
+        receipt_id: The ID of the receipt to get points for
+        
+    Returns:
+        The points for the receipt, or None if the receipt ID is not found
+    """
     receipt_data = receipts_store.get(receipt_id)
     if receipt_data:
         return receipt_data["points"]
     return None
 
-def calculate_points(receipt):
+
+def calculate_points(receipt: Receipt) -> int:
+    """
+    Calculate points for a receipt based on the rules.
+    
+    Args:
+        receipt: The receipt to calculate points for
+        
+    Returns:
+        The calculated points for the receipt
+    """
     points = 0
     
     # Rule 1: One point for every alphanumeric character in the retailer name

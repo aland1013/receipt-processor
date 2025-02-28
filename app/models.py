@@ -14,14 +14,38 @@ class Receipt(BaseModel):
     total: str = Field(..., pattern=r"^\d+\.\d{2}$")
     
     @field_validator('purchaseDate')
-    def validate_date(cls, v):
+    def validate_date(cls, v: str) -> str:
+        """
+        Validate that the purchase date is in YYYY-MM-DD format.
+        
+        Args:
+            v: The purchase date to validate
+            
+        Returns:
+            The validated purchase date
+            
+        Raises:
+            ValueError: If the purchase date is not in YYYY-MM-DD format
+        """
         # Ensure date is in YYYY-MM-DD format
         if not re.match(r"^\d{4}-\d{2}-\d{2}$", v):
             raise ValueError("Invalid date format, expected YYYY-MM-DD")
         return v
     
     @field_validator('purchaseTime')
-    def validate_time(cls, v):
+    def validate_time(cls, v: str) -> str:
+        """
+        Validate that the purchase time is in HH:MM format.
+        
+        Args:
+            v: The purchase time to validate
+            
+        Returns:
+            The validated purchase time
+            
+        Raises:
+            ValueError: If the purchase time is not in HH:MM format
+        """
         # Ensure time is in HH:MM format
         if not re.match(r"^\d{2}:\d{2}$", v):
             raise ValueError("Invalid time format, expected HH:MM")
