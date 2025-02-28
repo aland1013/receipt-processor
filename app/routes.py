@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, Response
-from typing import Tuple, Dict, Any, Union
+from typing import Tuple, Union
 from app.receipt_processor import process_receipt, get_receipt_points
 
 
